@@ -1,0 +1,52 @@
+### GET request to example server
+POST https://localhost/books
+Content-Type: application/ld+json
+Accept: application/ld+json
+
+
+{
+  "isbn": "979-10-281-1750-4",
+  "title": "Nouveau Printemps",
+  "description": "Préquel de la roue du temps sur la jeunesse de Moirane.",
+  "author": "Robert Jordan",
+  "publicationDate": "2021-10-19"
+}
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+        client.global.set('book', response.body["@id"]);
+        client.log(client.global.get('book_id'))
+    });
+%}
+
+### Get book
+GET https://localhost/books/1
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.global.set('book', response.body["@id"]);
+        client.log(client.global.get('book'))
+    });
+%}
+
+
+
+### Create review 1
+POST https://localhost/reviews
+Content-Type: application/ld+json
+Accept: application/ld+json
+
+{
+    "rating" : 5,
+    "body": "C'est pô mal",
+    "author": "Nico",
+    "book": "/books/1"
+}
+
+
+
+### Get Books
+GET https://localhost/{{book}}
+Content-Type: application/ld+json
+Accept: application/ld+json
